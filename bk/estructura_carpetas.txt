@@ -1,0 +1,9 @@
+proyecto/
+├── config/
+│   ├── config.php      (parámetros)
+│   └── .env            (variables de entorno)
+├── includes/
+│   └── Database.php    (clase de conexión)
+├── public/
+│   └── index.php       (programa principal)
+└── .gitignore          (ignorar archivos sensibles)
