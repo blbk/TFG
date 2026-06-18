@@ -162,14 +162,14 @@ $tieneErp   = !empty(array_intersect_key($filtros ?? [], array_flip($filtrosErp)
                 <div class="adv-field">
                     <label for="adv_hostname"><i class="fas fa-server"></i> Hostname</label>
                     <input type="text" id="adv_hostname" name="hostname" class="adv-input"
-                           placeholder="PC-MADRID-01…"
+                           placeholder="PC1234…"
                            value="<?= htmlspecialchars($filtros['hostname'] ?? '') ?>">
                 </div>
 
                 <div class="adv-field">
                     <label for="adv_ip"><i class="fas fa-network-wired"></i> Dirección IP</label>
                     <input type="text" id="adv_ip" name="ip" class="adv-input"
-                           placeholder="192.168.1…"
+                           placeholder="10.88.1…"
                            value="<?= htmlspecialchars($filtros['ip'] ?? '') ?>">
                 </div>
 
@@ -177,19 +177,19 @@ $tieneErp   = !empty(array_intersect_key($filtros ?? [], array_flip($filtrosErp)
                 <div class="adv-field">
                     <label for="adv_login"><i class="fas fa-user"></i> Login de usuario</label>
                     <input type="text" id="adv_login" name="login" class="adv-input"
-                           placeholder="jmoyano…"
+                           placeholder="ABC1234…"
                            value="<?= htmlspecialchars($filtros['login'] ?? '') ?>">
                 </div>
 
                 <div class="adv-field">
                     <label for="adv_nl"><i class="fas fa-desktop"></i> Nombre local</label>
                     <input type="text" id="adv_nl" name="nombre_local" class="adv-input"
-                           placeholder="IMP-PLANTA2…"
+                           placeholder="PC1234…"
                            value="<?= htmlspecialchars($filtros['nombre_local'] ?? '') ?>">
                 </div>
 
                 <div class="adv-field adv-field--date">
-                    <label><i class="fas fa-calendar-alt"></i> Fecha de alta</label>
+                    <label><i class="fas fa-calendar-alt"></i> Fecha de actividad</label>
                     <div class="date-range">
                         <input type="date" name="fecha_desde" class="adv-input"
                                value="<?= htmlspecialchars($filtros['fecha_desde'] ?? '') ?>" title="Desde">

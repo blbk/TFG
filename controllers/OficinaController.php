@@ -121,6 +121,7 @@ class OficinaController {
                 $activosErp  = $this->model->getActivosErp($id);
                 $totalErp    = $this->model->getTotalActivosErp($id);
                 $coordenadas = $this->model->getCoordenadasCiudad($oficina['ciudad'] ?? '');
+                $coordenadas = $this->model->getCoordenadasOficina($id);
             }
         } catch (PDOException $e) {
             $error = 'Error al obtener los datos de la oficina.';

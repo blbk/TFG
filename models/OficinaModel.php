@@ -701,4 +701,27 @@ class OficinaModel {
 
         return ['lat' => 40.4168, 'lng' => -3.7038, 'zoom' => 6]; // Fallback: Madrid
     }
+
+     /* ------------------------------------------------------------------
+     * getCoordenadasOficina()
+     * Consulta las coordenadas aproximadas de una oficina para el mapa Leaflet.
+     * Si la oficina no está en la tabla devuelve Madrid como fallback.
+     * ------------------------------------------------------------------ */
+    public function getCoordenadasOficina(int $idOficina): array {
+        $stmt = $this->dbErp->prepare("SELECT lat, lng, zoom FROM oficina WHERE id_oficina = :idOficina");
+        $stmt->execute(['idOficina' => $idOficina]);
+        $resultado = $stmt->fetch();
+
+            var_dump($resultado); // Depuración: mostrar el resultado de la consulta
+        // Si no se encuentra la oficina o no tiene coordenadas, usar valores por defecto
+        if (!$resultado || empty($resultado['lat']) || empty($resultado['lng'])) {
+            return ['lat' => 40.4168, 'lng' => -3.7038, 'zoom' => 6]; // Fallback: Madrid
+        }
+
+        return [
+            'lat' => $resultado['lat'],
+            'lng' => $resultado['lng'],
+            'zoom' => $resultado['zoom'] ?? 6 // Si zoom es null, usar 6 por defecto
+        ];
+    }
 }

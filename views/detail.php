@@ -55,6 +55,7 @@ if ($ci) {
         if ($oficina) {
             $redOficina   = $oficModel->getRedes((int)$oficina['id_oficina']);
             $coordenadas  = $oficModel->getCoordenadasCiudad($oficina['ciudad'] ?? '');
+            $coordenadas  = $oficModel->getCoordenadasOficina((int)$oficina['id_oficina']);
         }
         /*
          * La verificación de consistencia se lanza siempre que el CI
@@ -129,7 +130,7 @@ if ($ci) {
                         <td><?= htmlspecialchars($ci['modelo'] ?? '—') ?></td></tr>
                     <tr><th><i class="fas fa-barcode"></i> Número de serie</th>
                         <td><?= htmlspecialchars($ci['numero_serie'] ?? '—') ?></td></tr>
-                    <tr><th><i class="fas fa-calendar-alt"></i> Fecha de alta</th>
+                    <tr><th><i class="fas fa-calendar-alt"></i> Fecha de actividad</th>
                         <td><?= $ci['fecha'] ? date('d/m/Y', strtotime($ci['fecha'])) : '—' ?></td></tr>
                 </table>
             </div>
