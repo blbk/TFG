@@ -1,0 +1,20 @@
+﻿Ciudad;id_ciudad;cod_pais;cod_ciudad
+Madrid;1;01;01
+Barcelona;2;01;02
+Valencia;3;01;03
+Málaga;4;01;04
+Sevilla;5;01;05
+Zaragoza;6;01;06
+León;7;01;07
+Logroño;8;01;08
+Bilbao;9;01;09
+Badajoz;10;01;10
+Santander;11;01;11
+Salamanca;12;01;12
+Ciudad de México;13;02;01
+Tijuana;14;02;02
+Bogotá;15;03;01
+Medellín;16;03;02
+Cali;17;03;03
+Quito;18;04;01
+Guayaquil;19;04;02
