@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Geocodificador CSV con Slpy (API v1) + Leaflet</title>
+    <!-- Leaflet CSS + JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- PapaParse para CSV robusto -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #f4f7fc;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 20px 24px 32px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin: 0 0 0.25rem 0;
+            color: #1e466e;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h1 small {
+            font-size: 0.8rem;
+            font-weight: normal;
+            background: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 40px;
+            color: #2c5a8c;
+        }
+        .sub {
+            color: #4a627a;
+            border-left: 4px solid #3b82f6;
+            padding-left: 14px;
+            margin: 8px 0 20px 0;
+            font-size: 0.9rem;
+        }
+        .grid-2cols {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 16px;
+        }
+        .panel {
+            flex: 1.2;
+            min-width: 280px;
+            background: #fefefe;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+            padding: 16px 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .map-panel {
+            flex: 2;
+            min-width: 320px;
+        }
+        .card-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #e2edf7;
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        label {
+            font-weight: 500;
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+        input, select, button {
+            border-radius: 14px;
+            border: 1px solid #cbd5e1;
+            padding: 8px 14px;
+            font-size: 0.9rem;
+            width: 100%;
+            background: white;
+            transition: 0.2s;
+        }
+        button {
+            background: #1e466e;
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: 0.2s;
+        }
+        button.secondary {
+            background: #eef2ff;
+            color: #1e466e;
+            border: 1px solid #cbdff2;
+        }
+        button:hover {
+            background: #0f2f4f;
+            transform: translateY(-1px);
+        }
+        button.secondary:hover {
+            background: #e0e9fc;
+        }
+        button:disabled {
+            background: #b9c8e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .file-label {
+            background: #f1f5f9;
+            border: 1px dashed #3b82f6;
+            text-align: center;
+            cursor: pointer;
+            display: inline-block;
+            width: 100%;
+            padding: 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .progress-bar {
+            background: #e2e8f0;
+            border-radius: 40px;
+            height: 10px;
+            margin: 12px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.2s;
+        }
+        .status {
+            font-size: 0.8rem;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 16px;
+            margin: 10px 0;
+            font-family: monospace;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .map {
+            height: 420px;
+            border-radius: 24px;
+            border: 1px solid #cbd5e1;
+            background: #eef2f5;
+            margin-top: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            margin-top: 12px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px 4px;
+            text-align: left;
+        }
+        .preview-scroll {
+            max-height: 180px;
+            overflow: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            margin-top: 10px;
+        }
+        .flex-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        hr {
+            margin: 20px 0;
+        }
+        .badge {
+            background: #e6f7e6;
+            color: #2b6e2f;
+            border-radius: 40px;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 24px;
+            color: #5b6e8c;
+        }
+        .attribution {
+            font-size: 0.65rem;
+            text-align: center;
+            margin-top: 12px;
+            padding: 6px;
+            background: #f8f9fa;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Geocodificador de direcciones<small>CSV → coordenadas → mapa</small></h1>
+    <div class="sub">Seleccionar un CSV con estructura (dirección, ciudad, país). Se proporcionarán sus coordenadas geográficas usando la API de Slpy y las direcciones se visualizarán en el mapa.</div>
+
+    <div class="grid-2cols">
+        <!-- Panel izquierdo: configuración y acciones -->
+        <div class="panel">
+            <div class="card-title">Cargar CSV</div>
+            <label class="file-label" for="csvFileInput">🔍︎ Seleccionar archivo CSV</label>
+            <input type="file" id="csvFileInput" accept=".csv">
+
+            <div id="columnMappingArea" style="display: none;">
+                <div class="card-title">Mapeo de columnas</div>
+                <label>🗺️ Columna de CALLE</label>
+                <select id="streetColSelect"></select>
+                <label>🏙️ Columna de CIUDAD</label>
+                <select id="cityColSelect"></select>
+                <label>🌍 Columna de PAÍS (Código ISO Alpha-2)</label>
+                <select id="countryColSelect"></select>
+                <div class="preview-scroll" id="csvPreview"></div>
+                <div class="status" style="background:#eef2ff;">⚠️ El país debe ser código ISO de 2 letras (ej: es, us, mx).</div>
+            </div>
+
+            <div class="card-title" style="margin-top: 16px;">Credenciales Slpy</div>
+            <label>Clave API (Slpy key)</label>
+            <input type="text" id="apiKey" placeholder="clave-secreta-Slpy" value="">
+            <!--
+            <div class="status" id="apiHint">✅ Usando endpoint oficial: https://api.slpy.com/v1/search (método Structured). La clave API es obligatoria.</div>
+            -->
+
+            <div class="flex-btns">
+                <button id="geocodeBtn" disabled>🌐 Geocodificar y enriquecer</button>
+                <button id="exportBtn" disabled class="secondary">📥 Exportar CSV enriquecido</button>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <div id="progressStatus" class="status">✅ Esperando archivo CSV...</div>
+            <div class="attribution">© <a href="https://www.slpy.com" target="_blank">Slpy</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a></div>
+        </div>
+
+        <!-- Panel derecho: mapa y resultados -->
+        <div class="panel map-panel">
+            <div class="card-title">Mapa interactivo <span id="markerCount" class="badge">0 puntos</span></div>
+            <div id="leafletMap" class="map"></div>
+            <div class="flex-btns" style="margin-top: 12px;">
+                <button id="fitMapBtn" class="secondary" style="margin-top:0;">🔍 Ajustar vista a marcadores</button>
+                <button id="clearMapBtn" class="secondary" style="margin-top:0;">🗑️ Limpiar mapa</button>
+            </div>
+            <div class="card-title" style="margin-top: 16px;">Vista previa enriquecida (primeros 5)</div>
+            <div class="preview-scroll" id="enrichedPreview">— aún no geocodificado —</div>
+        </div>
+    </div>
+    <footer>ℹ️ Proceso: leer CSV → Ajustar el mapeo de columnas → construir dirección → consultar Slpy API v1 (parámetros: street, city, country) → añadir lat/lon → exportar CSV y pintar marcadores. <br>Javier Moyano Vizcaíno</footer>
+</div>
+
+<script>
+    // ---------- Variables globales ----------
+    let rawData = [];            // array de objetos originales (con columnas del CSV)
+    let headers = [];           // lista de nombres de columnas
+    let enrichedData = [];      // array con objetos originales + lat + lon + level + status
+    let map = null;
+    let currentMapMarkers = [];  // array de marcadores individuales
+
+    // Elementos DOM
+    const csvFileInput = document.getElementById('csvFileInput');
+    const columnMappingArea = document.getElementById('columnMappingArea');
+    const streetSelect = document.getElementById('streetColSelect');
+    const citySelect = document.getElementById('cityColSelect');
+    const countrySelect = document.getElementById('countryColSelect');
+    const csvPreviewDiv = document.getElementById('csvPreview');
+    const geocodeBtn = document.getElementById('geocodeBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const progressFill = document.getElementById('progressFill');
+    const progressStatusDiv = document.getElementById('progressStatus');
+    const enrichedPreviewDiv = document.getElementById('enrichedPreview');
+    const markerCountSpan = document.getElementById('markerCount');
+    const fitMapBtn = document.getElementById('fitMapBtn');
+    const clearMapBtn = document.getElementById('clearMapBtn');
+    const apiKeyInput = document.getElementById('apiKey');
+
+    let isGeocoding = false;
+
+    // Inicializar mapa (vista por defecto)
+    function initMap() {
+        if (map !== null) {
+            map.remove();
+        }
+        map = L.map('leafletMap').setView([40.416775, -3.703790], 5); // centro España
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+        currentMapMarkers = [];
+        updateMarkerCount();
+    }
+
+    function updateMarkerCount() {
+        const count = currentMapMarkers.length;
+        markerCountSpan.innerText = `${count} punto${count !== 1 ? 's' : ''}`;
+    }
+
+    // Limpiar mapa (solo marcadores)
+    function clearMarkers() {
+        currentMapMarkers.forEach(marker => map.removeLayer(marker));
+        currentMapMarkers = [];
+        updateMarkerCount();
+    }
+
+    // Dibujar marcadores desde enrichedData (solo donde lat/lon sean válidos)
+    function drawMarkersFromData() {
+        clearMarkers();
+        if (!enrichedData || enrichedData.length === 0) return;
+        const bounds = [];
+        enrichedData.forEach(row => {
+            const lat = parseFloat(row.lat);
+            const lng = parseFloat(row.lon);
+            if (!isNaN(lat) && !isNaN(lng) && lat !== null && lng !== null && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+                const addressStr = `${row[streetSelect.value] || ''} ${row[citySelect.value] || ''} ${row[countrySelect.value] || ''}`.trim();
+                const popupContent = `<b>📍 Dirección</b><br>${addressStr}<br><b>Coordenadas:</b> ${lat.toFixed(5)}, ${lng.toFixed(5)}<br><b>Precisión:</b> ${row.level || 'N/A'}`;
+                const marker = L.marker([lat, lng]).bindPopup(popupContent);
+                marker.addTo(map);
+                currentMapMarkers.push(marker);
+                bounds.push([lat, lng]);
+            }
+        });
+        updateMarkerCount();
+        if (bounds.length > 0) {
+            map.fitBounds(bounds);
+        }
+    }
+
+    // ---------- Función de geocodificación (basada en la proporcionada) ----------
+    async function fetchGeoData(street, city, countryCode, apiKey) {
+        // Construir parámetros según la documentación de Slpy (Structured Search)
+        // Parámetros: key, country, street, city (region y postcode son opcionales)
+        const params = new URLSearchParams({
+            key: apiKey,
+            country: countryCode,
+            street: street,
+            city: city
+        });
+        const apiUrl = 'https://api.slpy.com/v1/search';
+        
+        try {
+            const response = await fetch(`${apiUrl}?${params.toString()}`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const data = await response.json();
+            
+            // Según la documentación de Slpy, la respuesta incluye lat, lon, level, status
+            // Si el array de resultados está presente, tomamos el primero
+            let result = data;
+            if (data.results && Array.isArray(data.results) && data.results.length > 0) {
+                result = data.results[0];
+            }
+            
+            // Validar que tenga coordenadas
+            if (result && typeof result.lat !== 'undefined' && typeof result.lon !== 'undefined') {
+                return {
+                    lat: parseFloat(result.lat),
+                    lon: parseFloat(result.lon),
+                    level: result.level || null,
+                    status: result.status || 'OK'
+                };
+            } else {
+                console.warn('Formato inesperado en respuesta Slpy:', data);
+                throw new Error('No se encontraron coordenadas en la respuesta');
+            }
+        } catch (error) {
+            console.error(`Error geocodificando "${street}, ${city}, ${countryCode}":`, error);
+            throw error;
+        }
+    }
+
+    // Geocodificar lote completo con progreso y delay (respetar límites de la API)
+    async function geocodeAllRows() {
+        if (rawData.length === 0) {
+            progressStatusDiv.innerHTML = '❌ No hay datos cargados. Sube un CSV primero.';
+            return;
+        }
+        const apiKey = apiKeyInput.value.trim();
+        if (!apiKey) {
+            progressStatusDiv.innerHTML = '⚠️ Debes introducir la Clave API de Slpy.';
+            return;
+        }
+        // verificar que las columnas mapeadas existen
+        const streetCol = streetSelect.value;
+        const cityCol = citySelect.value;
+        const countryCol = countrySelect.value;
+        if (!streetCol || !cityCol || !countryCol) {
+            progressStatusDiv.innerHTML = '⚠️ Selecciona correctamente las columnas de calle, ciudad y país.';
+            return;
+        }
+
+        isGeocoding = true;
+        geocodeBtn.disabled = true;
+        exportBtn.disabled = true;
+        progressFill.style.width = '0%';
+        const total = rawData.length;
+        let successCount = 0;
+        let errorCount = 0;
+        const newEnriched = [];
+
+        for (let i = 0; i < total; i++) {
+            const row = rawData[i];
+            const streetVal = (row[streetCol] || '').trim();
+            const cityVal = (row[cityCol] || '').trim();
+            const countryVal = (row[countryCol] || '').trim();
+            
+            // Validar código de país (debe ser ISO alpha-2 de 2 letras)
+            if (!countryVal || countryVal.length !== 2) {
+                progressStatusDiv.innerHTML = `[${i+1}/${total}] ⚠️ País inválido o vacío (${countryVal || 'vacío'}), se omite.`;
+                newEnriched.push({ ...row, lat: '', lon: '', level: '', geocode_status: 'País inválido (requiere código ISO 2 letras)' });
+                errorCount++;
+                const percent = ((i+1) / total) * 100;
+                progressFill.style.width = `${percent}%`;
+                await new Promise(resolve => setTimeout(resolve, 100));
+                continue;
+            }
+
+            if (!streetVal || !cityVal) {
+                progressStatusDiv.innerHTML = `[${i+1}/${total}] ⚠️ Calle o ciudad vacía, se omite.`;
+                newEnriched.push({ ...row, lat: '', lon: '', level: '', geocode_status: 'Datos insuficientes (calle/ciudad vacía)' });
+                errorCount++;
+                const percent = ((i+1) / total) * 100;
+                progressFill.style.width = `${percent}%`;
+                await new Promise(resolve => setTimeout(resolve, 100));
+                continue;
+            }
+
+            try {
+                progressStatusDiv.innerHTML = `[${i+1}/${total}] 🌍 Geocodificando: "${streetVal}, ${cityVal}, ${countryVal}"`;
+                const coords = await fetchGeoData(streetVal, cityVal, countryVal, apiKey);
+                newEnriched.push({ 
+                    ...row, 
+                    lat: coords.lat, 
+                    lon: coords.lon, 
+                    level: coords.level,
+                    geocode_status: coords.status || 'OK'
+                });
+                successCount++;
+                // Pequeño delay para no saturar la API (respetar límite de 60 rpm)
+                await new Promise(resolve => setTimeout(resolve, 1200));
+            } catch (err) {
+                progressStatusDiv.innerHTML = `[${i+1}/${total}] ❌ Error: ${err.message.substring(0, 80)}`;
+                newEnriched.push({ ...row, lat: '', lon: '', level: '', geocode_status: `error: ${err.message}` });
+                errorCount++;
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            const percent = ((i+1) / total) * 100;
+            progressFill.style.width = `${percent}%`;
+        }
+
+        enrichedData = newEnriched;
+        isGeocoding = false;
+        geocodeBtn.disabled = false;
+        exportBtn.disabled = false;
+        progressStatusDiv.innerHTML = `✅ Geocodificación completada. Éxitos: ${successCount}, Fallos: ${errorCount}.`;
+        // mostrar preview enriquecido
+        showEnrichedPreview();
+        // dibujar marcadores en el mapa
+        drawMarkersFromData();
+    }
+
+    // Mostrar preview de datos enriquecidos (primeros 5)
+    function showEnrichedPreview() {
+        if (!enrichedData || enrichedData.length === 0) {
+            enrichedPreviewDiv.innerHTML = '⏳ Aún no hay datos enriquecidos. Ejecuta la geocodificación.';
+            return;
+        }
+        const previewRows = enrichedData.slice(0, 5);
+        let html = '<table style="width:100%; font-size:0.7rem;"><thead><tr>';
+        if (previewRows.length > 0) {
+            const keys = Object.keys(previewRows[0]);
+            keys.forEach(k => { html += `<th>${escapeHtml(k)}</th>`; });
+            html += '<tr></thead><tbody>';
+            previewRows.forEach(row => {
+                html += '<tr>';
+                keys.forEach(k => {
+                    let val = row[k] !== undefined ? String(row[k]).substring(0, 30) : '';
+                    html += `<td title="${escapeHtml(String(row[k] || ''))}">${escapeHtml(val)}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            if (enrichedData.length > 5) html += `<div style="text-align:center; padding:6px;">... y ${enrichedData.length-5} filas más</div>`;
+        } else {
+            html = '<div>No hay datos</div>';
+        }
+        enrichedPreviewDiv.innerHTML = html;
+    }
+
+    // Sanitizador para HTML
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // Exportar CSV enriquecido
+    function exportToCSV() {
+        if (!enrichedData || enrichedData.length === 0) {
+            alert('No hay datos enriquecidos. Primero ejecuta la geocodificación.');
+            return;
+        }
+        // usar PapaParse para generar csv
+        const csv = Papa.unparse(enrichedData, { quotes: true, header: true });
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute('download', 'direcciones_enriquecidas.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        progressStatusDiv.innerHTML += '<br>📁 Exportado CSV enriquecido.';
+    }
+
+    // Leer CSV y extraer headers, cargar rawData y mostrar mapeo
+    function handleCSVFile(file) {
+        if (!file) return;
+        Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            encoding: "UTF-8",
+            complete: function(results) {
+                if (results.errors && results.errors.length) {
+                    console.warn("Errores de parseo CSV:", results.errors);
+                }
+                if (!results.data || results.data.length === 0) {
+                    alert('El CSV está vacío o no tiene filas.');
+                    return;
+                }
+                rawData = results.data;
+                headers = results.meta.fields || Object.keys(results.data[0] || {});
+                if (headers.length === 0) {
+                    alert('No se encontraron columnas en el CSV.');
+                    return;
+                }
+                // Mostrar área de mapeo
+                columnMappingArea.style.display = 'block';
+                // Llenar selects con los headers
+                streetSelect.innerHTML = '<option value="">-- Seleccionar --</option>';
+                citySelect.innerHTML = '<option value="">-- Seleccionar --</option>';
+                countrySelect.innerHTML = '<option value="">-- Seleccionar --</option>';
+                headers.forEach(h => {
+                    const opt1 = document.createElement('option');
+                    opt1.value = h; opt1.textContent = h;
+                    const opt2 = opt1.cloneNode(true);
+                    const opt3 = opt1.cloneNode(true);
+                    streetSelect.appendChild(opt1);
+                    citySelect.appendChild(opt2);
+                    countrySelect.appendChild(opt3);
+                });
+                // Auto-detectar columnas comunes (español/inglés)
+                const lowerHeaders = headers.map(h => h.toLowerCase());
+                const detectCol = (variants) => {
+                    for (let i=0; i<headers.length; i++) {
+                        const low = headers[i].toLowerCase();
+                        if (variants.some(v => low === v || low.includes(v))) return headers[i];
+                    }
+                    return '';
+                };
+                const streetGuess = detectCol(['calle', 'street', 'direccion', 'address', 'via']);
+                const cityGuess = detectCol(['ciudad', 'city', 'municipio', 'localidad']);
+                const countryGuess = detectCol(['pais', 'country', 'país', 'nation', 'codigo_pais', 'country_code']);
+                if (streetGuess) streetSelect.value = streetGuess;
+                if (cityGuess) citySelect.value = cityGuess;
+                if (countryGuess) countrySelect.value = countryGuess;
+
+                // mostrar preview del CSV (primeras 3 filas)
+                let previewHtml = '<strong>🔍 Vista previa CSV (3 primeras filas)</strong><table style="width:100%; font-size:0.7rem;"><thead><tr>';
+                headers.forEach(h => previewHtml += `<th>${escapeHtml(h)}</th>`);
+                previewHtml += '</td></thead><tbody>';
+                for (let i=0; i<Math.min(3, rawData.length); i++) {
+                    previewHtml += '<tr>';
+                    headers.forEach(h => {
+                        let val = rawData[i][h] || '';
+                        previewHtml += `<td>${escapeHtml(val.substring(0, 40))}</td>`;
+                    });
+                    previewHtml += '</tr>';
+                }
+                previewHtml += '</tbody></table>';
+                csvPreviewDiv.innerHTML = previewHtml;
+                geocodeBtn.disabled = false;
+                exportBtn.disabled = true;
+                enrichedData = [];
+                clearMarkers();
+                enrichedPreviewDiv.innerHTML = '— Pendiente geocodificación —';
+                progressStatusDiv.innerHTML = `📄 CSV cargado: ${rawData.length} direcciones. Asigna las columnas y haz clic en "Geocodificar".<br>`;
+                progressFill.style.width = '0%';
+            },
+            error: function(err) {
+                console.error(err);
+                alert('Error al parsear CSV: ' + err.message);
+            }
+        });
+    }
+
+    // Eventos
+    csvFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            handleCSVFile(file);
+        }
+    });
+
+    geocodeBtn.addEventListener('click', () => {
+        if (isGeocoding) {
+            alert('Ya hay una geocodificación en curso. Espera.');
+            return;
+        }
+        if (rawData.length === 0) {
+            alert('Carga un archivo CSV primero.');
+            return;
+        }
+        if (!streetSelect.value || !citySelect.value || !countrySelect.value) {
+            alert('Selecciona las columnas de calle, ciudad y país.');
+            return;
+        }
+        if (!apiKeyInput.value.trim()) {
+            alert('Introduce tu clave API de Slpy.');
+            return;
+        }
+        geocodeAllRows();
+    });
+
+    exportBtn.addEventListener('click', exportToCSV);
+
+    fitMapBtn.addEventListener('click', () => {
+        if (currentMapMarkers.length > 0) {
+            const group = L.featureGroup(currentMapMarkers);
+            map.fitBounds(group.getBounds());
+        } else {
+            alert('No hay marcadores para ajustar.');
+        }
+    });
+
+    clearMapBtn.addEventListener('click', () => {
+        clearMarkers();
+    });
+
+    // Inicializar mapa
+    initMap();
+</script>
+</body>
+</html>

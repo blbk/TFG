@@ -1,4 +1,20 @@
 <?php
+/* =========================================================
+ * Proyecto      : Sistema de Gestión CMDB para TFG
+ * Archivo       : views/search.php
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
+ *
+ * Descripción   : Página de búsqueda de elementos de configuración (CI). 
+ * Permite búsqueda simple y avanzada.
+ *
+ * Variables recibidas desde UsuarioController::showUsuario():
+ *   $login    — login solicitado (string, siempre presente)
+ *   $usuario  — array [login, nomape, tlf_movil, foto] o null si no existe
+ *   $rutaFoto — ruta relativa a la imagen de perfil (con fallback)
+ *   $error    — string|null
+ * ========================================================= */
+
 $pageTitle    = 'Búsqueda de CI';
 $modoAvanzado = $modoAvanzado ?? false;
 $modoOficina  = $modoOficina  ?? false;   // true cuando viene de la ficha de oficina
@@ -18,7 +34,7 @@ function iconoClase(string $clase): string {
     return '<i class="fas fa-cube"></i>';
 }
 
-// ¿Hay algún campo ERP activo en los filtros actuales?
+// ¿Hay algún campo del ERP activo en los filtros actuales?
 $filtrosErp = ['id_oficina','nombre_oficina','direccion','cp','ciudad','unidad_organica'];
 $tieneErp   = !empty(array_intersect_key($filtros ?? [], array_flip($filtrosErp)));
 ?>

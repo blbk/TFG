@@ -1,4 +1,20 @@
 <?php
+/* =========================================================
+ * Proyecto      : Sistema de Gestión CMDB para TFG
+ * Archivo       : views/login.php
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
+ *
+ * Descripción   : Pantalla de Login para el sistema de gestión CMDB. 
+ *                 Solicita usuario y contraseña.
+ *
+ * Variables recibidas desde UsuarioController::showUsuario():
+ *   $login    — login solicitado (string, siempre presente)
+ *   $usuario  — array [login, nomape, tlf_movil, foto] o null si no existe
+ *   $rutaFoto — ruta relativa a la imagen de perfil (con fallback)
+ *   $error    — string|null
+ * ========================================================= */
+
 $expired = !empty($_GET['expired']);
 ?>
 <!DOCTYPE html>
@@ -17,25 +33,6 @@ $expired = !empty($_GET['expired']);
     <div class="panel-izq">
         <div class="logo-container">
             <img src="public/img/cubo_q.svg" alt="Logo CMDB" class="logo-unir">
-            <!--
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
-                <circle cx="100" cy="100" r="90" fill="none" stroke="#0098cd" stroke-width="2" opacity="0.3"/>
-                <circle cx="100" cy="100" r="18" fill="#0098cd"/>
-                <circle cx="100" cy="30"  r="10" fill="#0098cd" opacity="0.8"/>
-                <circle cx="160" cy="70"  r="10" fill="#0098cd" opacity="0.8"/>
-                <circle cx="160" cy="140" r="10" fill="#0098cd" opacity="0.8"/>
-                <circle cx="100" cy="170" r="10" fill="#0098cd" opacity="0.8"/>
-                <circle cx="40"  cy="140" r="10" fill="#0098cd" opacity="0.8"/>
-                <circle cx="40"  cy="70"  r="10" fill="#0098cd" opacity="0.8"/>
-                <line x1="100" y1="100" x2="100" y2="30"  stroke="#0098cd" stroke-width="1.5" opacity="0.6"/>
-                <line x1="100" y1="100" x2="160" y2="70"  stroke="#0098cd" stroke-width="1.5" opacity="0.6"/>
-                <line x1="100" y1="100" x2="160" y2="140" stroke="#0098cd" stroke-width="1.5" opacity="0.6"/>
-                <line x1="100" y1="100" x2="100" y2="170" stroke="#0098cd" stroke-width="1.5" opacity="0.6"/>
-                <line x1="100" y1="100" x2="40"  y2="140" stroke="#0098cd" stroke-width="1.5" opacity="0.6"/>
-                <line x1="100" y1="100" x2="40"  y2="70"  stroke="#0098cd" stroke-width="1.5" opacity="0.6"/>
-                <text x="100" y="106" text-anchor="middle" font-size="16" fill="white" font-family="sans-serif" font-weight="bold">CI</text>
-            </svg>
-            -->
         </div>
         <h1>CMDB</h1>
         <p>Gestión de Configuración y Activos</p>
