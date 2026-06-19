@@ -543,18 +543,6 @@ if ($ci) {
                             <span class="cod-pais">(<?= htmlspecialchars($oficina['cod_pais']) ?>)</span>
                         </td>
                     </tr>
-                    <?php if (!empty($redOficina)): ?>
-                    <tr>
-                        <th><i class="fas fa-network-wired"></i> Redes</th>
-                        <td>
-                            <?php foreach ($redOficina as $red): ?>
-                            <span class="badge-vlan" title="<?= htmlspecialchars($red['descripcion'] ?? '') ?>">
-                                VLAN <?= $red['vlan'] ?> — <?= htmlspecialchars($red['cidr']) ?>
-                            </span>
-                            <?php endforeach; ?>
-                        </td>
-                    </tr>
-                    <?php endif; ?>
                 </table>
 
                 <!-- Mini mapa Leaflet centrado en la ciudad de la oficina -->

@@ -58,7 +58,7 @@ class UsuarioController {
             if ($usuario) {
                 $rutaFoto = $this->model->getRutaFoto((int)$usuario['foto']);
             } else {
-                $error = "No se encontró el usuario «$login» en el sistema ITSM.";
+                $error = "El usuario '$login' no existe en el sistema ITSM.";
             }
         } catch (PDOException $e) {
             $error = 'Error al obtener los datos del usuario.';

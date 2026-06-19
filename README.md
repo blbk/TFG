@@ -11,11 +11,9 @@ cmdb/
 ├── index.php                  ← Punto de entrada (Front Controller)
 ├── .htaccess
 ├── README.md
-├── datos_prueba.sql           ← Datos de ejemplo
-├── crear_hash.php             ← Script aux para generar hashes
 │
-├── config/
-│   ├── database.php           ← *** EDITAR credenciales aquí ***
+├── config/                    ← Parámetros iniciales
+│   ├── database.php           ← *** credenciales aquí ***
 │   ├── app.php
 │   └── .htaccess              ← Bloquea acceso web a esta carpeta
 │
@@ -36,13 +34,24 @@ cmdb/
 │       ├── header.php
 │       └── footer.php
 │
-└── public/
-    ├── css/
-    │   ├── estilos_login.css
-    │   └── app.css
-    └── js/
-        ├── login.js
-        └── search.js
+├── public/
+│   ├── css/
+│   │   ├── estilos_login.css
+│   │   └── app.css
+│   └── js/
+│       ├── login.js
+│       └── search.js
+│
+├── datos/
+│    ├── datos_prueba.sql       ← Datos de ejemplo
+│    └── ficheros CSV           ← Datos para las BBDD
+│
+└── scripts/
+     ├── crear_hash.php         ← Script para generar hashes
+     ├── geocodificador.html    ← Script para geolocalizar direcciones
+     ├── Ficheros DDL           ← Script SQL para generar las BBDD
+     ├── Ficheros ETL           ← Script SQL para cargar las BBDD
+     └── ficheros ps1           ← Script para obtener datos técnicos
 ```
 
 ---
@@ -80,8 +89,8 @@ http://localhost/cmdb/index.php
 | admin   | admin123    | Administrador |
 | tecnico | tecnico123  | Técnico       |
 
-> Si los hashes no funcionan, genera los tuyos ejecutando:
-> `php crear_hash.php` y actualiza `datos_prueba.sql`
+> Si los hashes no funcionan, generar nuevos ejecutando:
+> `php crear_hash.php` y actualizando `datos_prueba.sql`
 
 ---
 

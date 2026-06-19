@@ -712,7 +712,6 @@ class OficinaModel {
         $stmt->execute(['idOficina' => $idOficina]);
         $resultado = $stmt->fetch();
 
-            var_dump($resultado); // Depuración: mostrar el resultado de la consulta
         // Si no se encuentra la oficina o no tiene coordenadas, usar valores por defecto
         if (!$resultado || empty($resultado['lat']) || empty($resultado['lng'])) {
             return ['lat' => 40.4168, 'lng' => -3.7038, 'zoom' => 6]; // Fallback: Madrid
