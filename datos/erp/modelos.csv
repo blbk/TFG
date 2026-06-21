@@ -1,0 +1,75 @@
+﻿nombre;id_marca;id_clase;id_modelo
+FortiGate 60F;12;8;1
+ISR 4331;8;8;2
+SRX300;17;8;3
+AR6120;16;8;4
+TravelMate;1;2;5
+E24 G4;14;4;6
+U2723QE;9;4;7
+24MK600M;20;4;8
+ThinkVision T24i;19;4;9
+P2422H;9;4;10
+M27f;14;4;11
+Veriton;1;1;12
+ExpertCenter;4;1;13
+ProDesk 400;14;1;14
+ThinkCentre M70q;19;1;15
+EliteDesk 800;14;1;16
+OptiPlex 7090;9;1;17
+Esprimo D538;13;1;18
+OptiPlex 3090;9;1;19
+VP228HE;4;4;20
+ZenBook;4;2;21
+GW2480;5;4;22
+Latitude 5420;9;2;23
+ThinkPad L14;19;2;24
+ThinkPad T14;19;2;25
+MacBook Air M1;2;2;26
+Latitude 7420;9;2;27
+MacBook Pro M2;2;2;28
+ProBook 440;14;2;29
+EliteBook 840;14;2;30
+DAP;10;10;31
+EcoTank ET-2810;11;5;32
+i-SENSYS LBP623Cw;7;5;33
+MFC-L2710DW;6;5;34
+LaserJet Pro M404;14;5;35
+PageWide Pro;14;5;36
+AirEngine;16;10;37
+ECOSYS;18;5;38
+Catalyst 9115;8;10;39
+AP-515;3;10;40
+Omada EAP225;26;10;41
+UniFi U6-Pro;27;10;42
+AP-303;3;10;43
+Surface Go;21;3;44
+RB4011;22;8;45
+ProSAFE;23;7;46
+JetStream;26;7;47
+T40;28;8;48
+VersaLink;29;5;49
+Galaxy A54;25;6;50
+Galaxy S24;25;6;51
+Galaxy S22;25;6;52
+Galaxy S23;25;6;53
+Galaxy S21;25;6;54
+Thunderbolt G4;14;9;55
+WD19TBS;9;9;56
+Catalyst 9200;8;7;57
+Catalyst 2960X;8;7;58
+OfficeConnect 1920;15;7;59
+EX2300;17;7;60
+CX 6100;3;7;61
+VVX 350;24;11;62
+CP-8851;8;11;63
+VVX 450;24;11;64
+VVX 250;24;11;65
+CP-8841;8;11;66
+CP-7821;8;11;67
+Galaxy Tab A8;25;3;68
+Galaxy Tab S8;25;3;69
+MatePad 11;16;3;70
+Tab M10;19;3;71
+iPad 10.2;2;3;72
+iPad Air;2;3;73
+Pad 5;30;3;74

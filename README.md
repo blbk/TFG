@@ -44,7 +44,8 @@ cmdb/
 │
 ├── datos/
 │    ├── datos_prueba.sql       ← Datos de ejemplo
-│    └── ficheros CSV           ← Datos para las BBDD
+│    ├── cmdb                   ← ficheros CSV de Datos para la CMDB
+│    └── erp                    ← ficheros CSV de Datos para el ERP
 │
 └── scripts/
      ├── crear_hash.php         ← Script para generar hashes

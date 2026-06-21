@@ -296,7 +296,7 @@ $tieneErp   = !empty(array_intersect_key($filtros ?? [], array_flip($filtrosErp)
                 <div class="stat-card stat-card--total">
                     <div class="stat-icon"><i class="fas fa-cubes"></i></div>
                     <div class="stat-info">
-                        <span class="stat-num"><?= number_format((int)$estadisticas['total_ci']) ?></span>
+                        <span class="stat-num"><?= number_format((int)$estadisticas['total_ci'],0,'','.') ?></span>
                         <span class="stat-label">Total CI</span>
                     </div>
                 </div>

@@ -55,7 +55,7 @@ commit;
 -- Valores para la tabla de estructura de la organización
 START TRANSACTION;
 	-- 1. Vaciar la tabla
-	DELETE FROM marca;
+	DELETE FROM unidad_organica;
 	
 	-- 2. Insertar los nuevos datos
 	INSERT INTO unidad_organica (nombre) VALUES
@@ -72,43 +72,3 @@ START TRANSACTION;
 	('Departamento de Responsabilidad Social Corporativa'),
 	('Dirección de Infraestucturas');
 commit;
-
--- Tabla: marca
--- Valores para la tabla de marcas de activos
-/*
-START TRANSACTION;
-	-- 1. Vaciar la tabla
-	DELETE FROM marca;
-
-	-- 2. Insertar los nuevos datos
-	INSERT INTO marca (nombre) VALUES	
-	('HP'),
-	('Fujitsu'),
-	('Lenovo'),
-	('Acer'),
-	('ASUS'),
-	('Dell'),
-	('Apple'),
-	('Samsung'),
-	('Microsoft'),
-	('Huawei'),
-	('Xiaomi'),
-	('LG'),
-	('BenQ'),
-	('Philips'),
-	('Epson'),
-	('Brother'),
-	('Canon'),
-	('Kyocera'),
-	('Xerox'),
-	('Cisco'),
-	('Aruba'),
-	('Juniper'),
-	('D-Link'),
-	('TP-Link'),
-	('Ubiquiti'),
-	('Fortinet'),
-	('Mikrotik'),
-	('Polycom');
-commit;
-*/
