@@ -2,6 +2,11 @@
 /* =========================================================
  * Proyecto      : Sistema de Gestión CMDB para TFG
  * Archivo       : controllers/AuthController.php
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
+ * 
+ * Descripción   : Controlador para manejar la autenticación de usuarios
+ *                  (login, logout) y la gestión de sesiones.
  * ========================================================= */
 
 require_once BASE_PATH . '/models/UsuarioModel.php';
@@ -42,7 +47,7 @@ class AuthController {
                 }
             } catch (PDOException $e) {
                 $error = 'Error de conexión con la base de datos.';
-                if (APP_ENV === 'development') {
+                if (APP_ENV === 'desarrollo') {
                     $error .= ' [' . $e->getMessage() . ']';
                 }
             }

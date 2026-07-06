@@ -62,7 +62,7 @@ class UsuarioController {
             }
         } catch (PDOException $e) {
             $error = 'Error al obtener los datos del usuario.';
-            if (APP_ENV === 'development') {
+            if (APP_ENV === 'desarrollo') {
                 $error .= ' [' . $e->getMessage() . ']';
             }
         }

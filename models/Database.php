@@ -2,7 +2,11 @@
 /* =========================================================
  * Proyecto      : Sistema de Gestión CMDB para TFG
  * Archivo       : models/Database.php
- * Descripción   : Singleton PDO — gestiona conexiones CMDB y ERP
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
+ *
+ * Descripción   : Se crean las instancias de las BBDD usando el Patrón Singleton 
+ *                 PDO — gestiona conexiones CMDB y ERP
  * ========================================================= */
 
 class Database {

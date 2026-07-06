@@ -5,12 +5,12 @@
  * Autor         : Javier Moyano Vizcaíno
  * Curso         : 2025/2026
  *
- * Descripción   : Vista de ficha completa de una oficina.
+ * Descripción   : Vista de la ficha completa de una oficina.
  *                 Muestra cuatro secciones:
  *                   1. Datos de la organización (nombre, unidad)
  *                   2. Ubicación (dirección, ciudad, CP, país + mapa)
  *                   3. Conectividad (redes / VLANs de la sede)
- *                   4. Datos técnicos (activos CMDB vs ERP)
+ *                   4. Comparativa de CI CMDB vs activos ERP
  *
  * Variables recibidas desde OficinaController::showOficina():
  *   $oficina     — array con datos de la oficina (ERP)
@@ -401,8 +401,8 @@ function iconoClaseOf(string $clase): string {
                     <!-- Total CMDB -->
                     <div class="comp-card comp-card--cmdb">
                         <div class="comp-icon"><i class="fas fa-database"></i></div>
-                        <div class="comp-num"><?= $totalCmdb ?></div>
-                        <div class="comp-label">CI en CMDB<br><small>(con configuración de red)</small></div>
+                        <div class="comp-num"><?= number_format($totalCmdb, 0, '', '.') ?></div>
+                        <div class="comp-label">CI en CMDB<br><small>(descubiertos en la oficina)</small></div>
                     </div>
 
                     <!-- Diferencia -->
@@ -421,13 +421,13 @@ function iconoClaseOf(string $clase): string {
                     ?>
                     <div class="comp-card <?= $diffClass ?>">
                         <div class="comp-icon"><i class="fas <?= $diffIcon ?>"></i></div>
-                        <div class="comp-num"><?= $diff >= 0 ? '+' . $diff : $diff ?></div>
+                        <div class="comp-num"><?= $diff >= 0 ? '+' . number_format($diff, 0, '', '.') : number_format($diff, 0, '', '.') ?></div>
                         <div class="comp-label">Diferencia<br>
                             <small>
                             <?php if ($diff === 0): ?>
                                 Inventarios alineados
                             <?php elseif ($diff > 0): ?>
-                                Activos ERP sin IP en CMDB
+                                Activos ERP sin equivalencia en CMDB
                             <?php else: ?>
                                 CI en CMDB sin registro en ERP
                             <?php endif; ?>
@@ -438,7 +438,7 @@ function iconoClaseOf(string $clase): string {
                     <!-- Total ERP -->
                     <div class="comp-card comp-card--erp">
                         <div class="comp-icon"><i class="fas fa-boxes"></i></div>
-                        <div class="comp-num"><?= $totalErp ?></div>
+                        <div class="comp-num"><?= number_format($totalErp, 0, '', '.') ?></div>
                         <div class="comp-label">Activos en ERP<br><small>(inventario patrimonial)</small></div>
                     </div>
                 </div>

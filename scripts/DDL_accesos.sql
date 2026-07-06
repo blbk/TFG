@@ -1,4 +1,15 @@
-/*============================================================================
+/* =========================================================
+ * Proyecto      : Sistema de Gestión CMDB para TFG
+ * Archivo       : DDL_accesos.SQL
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
+ *
+ * Descripción	 : DDL para la creación de tablas de la CMDB
+ * 					Tablas para controlar los CI
+ * 					Tablas para controlar los accesos
+ * =========================================================*/
+ 
+ /*============================================================================
 -- SCRIPT DDL: MODELO DE BASE DE DATOS PARA INVENTARIO PATRIMONIAL GLOBAL (MySQL)
 -- ============================================================================
 

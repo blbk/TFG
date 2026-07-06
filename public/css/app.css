@@ -1,7 +1,17 @@
 /* =========================================================
  * Proyecto      : Sistema de Gestión CMDB para TFG
  * Archivo       : public/css/app.css
- * Descripción   : Estilos generales de la aplicación (post-login)
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
+ * Descripción   : Estilos generales de la aplicación
+ * 					Define la apariencia visual de la interfaz,
+ * 					componentes responsive y estilos generales.
+ *
+ * Tecnologías:
+ * 		- CSS3
+ * 		- Flexbox
+ *		- Grid layout
+ * 		- Diseño Responsive
  * ========================================================= */
 
 :root {
@@ -1031,7 +1041,7 @@ a:hover { text-decoration: underline; }
     gap:         8px;
 }
 
-/* Botón "Ver ficha completa" dentro del header de la card */
+/* Botón "Información de la oficina" dentro del header de la card */
 .btn-detail--header {
     margin-left: auto;
     background:  rgba(255,255,255,.12);
@@ -1315,6 +1325,11 @@ a:hover { text-decoration: underline; }
 }
 
 .adv-aviso-oficinas i { color: #ba7517; }
+/* Ocultar el aviso si se usa el atributo hidden
+    (Sin esta regla, el aviso no se ocultaría) */
+.adv-aviso-oficinas[hidden] {
+    display: none !important;
+}
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-4px); }
@@ -1651,4 +1666,30 @@ a:hover { text-decoration: underline; }
 .logo-header {
     width: 15%;      /* Ocupará la mitad del contenedor padre */
   max-width: 300px;
+}
+
+/* LOADER DE BÚSQUEDA (search.php) */
+.search-loader {
+    display:         flex;
+    flex-direction:  column;
+    align-items:     center;
+    justify-content: center;
+    gap:             16px;
+    padding:         64px 24px;
+}
+
+.search-loader[hidden] {
+    display: none !important;
+}
+
+.loader-svg {
+    width:  80px;
+    height: 80px;
+}
+
+.loader-texto {
+    font-size:   1rem;
+    color:       var(--gris-texto);
+    font-weight: 500;
+    letter-spacing: 0.3px;
 }

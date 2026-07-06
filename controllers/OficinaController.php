@@ -42,7 +42,7 @@ class OficinaController {
             $paises = $this->model->getPaises();
         } catch (PDOException $e) {
             $error = 'Error al cargar los datos del formulario.';
-            if (APP_ENV === 'development') $error .= ' [' . $e->getMessage() . ']';
+            if (APP_ENV === 'desarrollo') $error .= ' [' . $e->getMessage() . ']';
         }
 
         require VIEWS_PATH . '/oficinas_busqueda.php';
@@ -81,7 +81,7 @@ class OficinaController {
             $resultado = $this->model->buscar($filtros, $pagina, $porPagina);
         } catch (PDOException $e) {
             $error = 'Error al realizar la búsqueda de oficinas.';
-            if (APP_ENV === 'development') $error .= ' [' . $e->getMessage() . ']';
+            if (APP_ENV === 'desarrollo') $error .= ' [' . $e->getMessage() . ']';
         }
 
         require VIEWS_PATH . '/oficinas_busqueda.php';
@@ -120,12 +120,12 @@ class OficinaController {
                 $totalCmdb   = $this->model->getTotalCiCmdb($id);
                 $activosErp  = $this->model->getActivosErp($id);
                 $totalErp    = $this->model->getTotalActivosErp($id);
-                $coordenadas = $this->model->getCoordenadasCiudad($oficina['ciudad'] ?? '');
+                // $coordenadas = $this->model->getCoordenadasCiudad($oficina['ciudad'] ?? '');
                 $coordenadas = $this->model->getCoordenadasOficina($id);
             }
         } catch (PDOException $e) {
             $error = 'Error al obtener los datos de la oficina.';
-            if (APP_ENV === 'development') $error .= ' [' . $e->getMessage() . ']';
+            if (APP_ENV === 'desarrollo') $error .= ' [' . $e->getMessage() . ']';
         }
 
         require VIEWS_PATH . '/oficina.php';
@@ -166,7 +166,7 @@ class OficinaController {
             }
         } catch (PDOException $e) {
             $error = 'Error al obtener los activos del ERP de la oficina.';
-            if (APP_ENV === 'development') $error .= ' [' . $e->getMessage() . ']';
+            if (APP_ENV === 'desarrollo') $error .= ' [' . $e->getMessage() . ']';
         }
 
         require VIEWS_PATH . '/oficina_activos_erp.php';

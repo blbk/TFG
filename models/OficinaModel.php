@@ -297,8 +297,8 @@ class OficinaModel {
             'id_erp'     => $idOficinaErp,
             'nombre_red' => $nombreRed,
             'nombre_erp' => $nombreErp,
-            'mensaje'    => "Inconsistencia: la red apunta a «$nombreRed» (#$idOficinaRed) " .
-                            "pero el ERP registra «$nombreErp» (#$idOficinaErp).",
+            'mensaje'    => "Inconsistencia: el CI reporta en '$nombreRed' (#$idOficinaRed) " .
+                            "pero el ERP registra '$nombreErp' (#$idOficinaErp).",
         ];
     }
 
@@ -345,6 +345,7 @@ class OficinaModel {
                     o.direccion,
                     o.cp,
                     c.nombre        AS ciudad,
+                    c.id_ciudad,
                     p.nombre        AS pais,
                     p.cod_pais,
                     uo.nombre       AS unidad_organica
@@ -647,8 +648,11 @@ class OficinaModel {
     /* ------------------------------------------------------------------
      * getCoordenadasCiudad()
      * Coordenadas aproximadas de una ciudad para el mapa Leaflet.
-     * Si la ciudad no está en la tabla devuelve Madrid como fallback.
-     * En producción se podría sustituir por la API de Nominatim.
+     * Si la ciudad no está en la tabla devuelve Madrid por defecto (fallback.
+     * En producción se podría sustituir por la API (P. ej. Nominatim).
+     * Esta función ya no se usa en la vista de oficina, 
+     * que ya tiene las coordenadas de las oficinas en la tabla oficina, 
+     * pero se mantiene por posibles oficinas futuras no geolocalizadas.
      * ------------------------------------------------------------------ */
     public function getCoordenadasCiudad(string $ciudad): array {
         $coordenadas = [

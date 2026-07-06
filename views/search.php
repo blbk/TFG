@@ -271,11 +271,40 @@ $tieneErp   = !empty(array_intersect_key($filtros ?? [], array_flip($filtrosErp)
                 <!-- Aviso contextual: aparece cuando solo hay filtros ERP -->
                 <span id="avisoOficinas" class="adv-aviso-oficinas" hidden>
                     <i class="fas fa-info-circle"></i>
-                    Solo has rellenado filtros de oficina — el resultado será un listado de oficinas
+                    Solo se han rellenado filtros de oficina — el resultado será un listado de oficinas
                 </span>
             </div>
         </form>
     </section>
+
+     <!-- ══════════════════════════════════════════
+         LOADER — visible mientras el servidor procesa la búsqueda.
+         Se muestra al enviar cualquiera de los dos formularios y
+         desaparece en cuanto el DOM termina de cargar los resultados.
+    ══════════════════════════════════════════ -->
+    <div id="searchLoader" class="search-loader" hidden aria-label="Buscando…">
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' class="loader-svg" aria-hidden="true">
+            <g fill='#0098CD' stroke='#0098CD' stroke-width='15'>
+                <circle r='15' cx='50'  cy='150'>
+                    <animateTransform attributeName='transform' type='translate' calcMode='spline'
+                        dur='2' values='0 0;0 -100' keySplines='.5 0 .5 1' repeatCount='indefinite'/>
+                </circle>
+                <circle r='15' cx='50'  cy='50'>
+                    <animateTransform attributeName='transform' type='translate' calcMode='spline'
+                        dur='2' values='0 0;100 0' keySplines='.5 0 .5 1' repeatCount='indefinite'/>
+                </circle>
+                <circle r='15' cx='150' cy='50'>
+                    <animateTransform attributeName='transform' type='translate' calcMode='spline'
+                        dur='2' values='0 0;0 100' keySplines='.5 0 .5 1' repeatCount='indefinite'/>
+                </circle>
+                <circle r='15' cx='150' cy='150'>
+                    <animateTransform attributeName='transform' type='translate' calcMode='spline'
+                        dur='2' values='0 0;-100 0' keySplines='.5 0 .5 1' repeatCount='indefinite'/>
+                </circle>
+            </g>
+        </svg>
+        <p class="loader-texto">Buscando…</p>
+    </div>
 
     <!-- ══════════════════════════════════════════
          RESULTADOS
@@ -304,7 +333,7 @@ $tieneErp   = !empty(array_intersect_key($filtros ?? [], array_flip($filtrosErp)
                 <div class="stat-card">
                     <div class="stat-icon"><?= iconoClase($cl['nombre']) ?></div>
                     <div class="stat-info">
-                        <span class="stat-num"><?= number_format($cl['total']) ?></span>
+                        <span class="stat-num"><?= number_format($cl['total'],0,'','.') ?></span>
                         <span class="stat-label"><?= htmlspecialchars($cl['nombre']) ?></span>
                     </div>
                 </div>

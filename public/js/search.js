@@ -1,6 +1,8 @@
 /* =========================================================
  * Proyecto      : Sistema de Gestión CMDB para TFG
  * Archivo       : public/js/search.js
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
  * Descripción   : Interactividad de la pantalla de búsqueda.
  *
  * Incluye:
@@ -11,7 +13,13 @@
  *   - Toggle tabla / tarjetas con persistencia en localStorage
  *   - Navegación por clic en fila de tabla
  *   - Autocompletado AJAX con debounce y navegación por teclado
+ *   - Loader de búsqueda al enviar formulario (simple o avanzado)
  * ========================================================= */
+
+/* Ocultar el loader al cargar la página 
+   (se mostrará al buscar un CI: enviar un formulario) */
+const loader = document.getElementById('searchLoader');
+if (loader) loader.hidden = true;
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -265,4 +273,45 @@ document.addEventListener('DOMContentLoaded', () => {
         return d.innerHTML;
     }
 
+    /* ================================================================
+       LOADER DE BÚSQUEDA
+       Se muestra al enviar cualquiera de los dos formularios
+       (simple o avanzado) y se oculta automáticamente cuando el
+       DOM ya tiene los resultados (la página nueva ha cargado).
+
+       Nota: el loader solo se activa cuando hay algo que buscar,
+       evitando mostrarlo al limpiar filtros o al enviar vacío.
+    ================================================================ */
+    // const loader       = document.getElementById('searchLoader');
+    const searchForm   = document.getElementById('searchForm');
+    const advForm      = document.getElementById('advancedForm');
+
+    function mostrarLoader() {
+        if (loader) loader.hidden = false;
+    }
+
+    /* Formulario de búsqueda simple: mostrar loader solo si hay término */
+    if (searchForm) {
+        searchForm.addEventListener('submit', () => {
+            const q = document.getElementById('searchInput')?.value.trim();
+            if (q) mostrarLoader();
+        });
+    }
+
+    /* Formulario de búsqueda avanzada: mostrar loader siempre que se envíe */
+    if (advForm) {
+        advForm.addEventListener('submit', mostrarLoader);
+    }
+
+    /*
+     * Ocultar el loader en cuanto el DOM esté listo (la página de
+     * resultados ya ha cargado). Si el usuario pulsa "atrás" desde
+     * los resultados, el navegador puede restaurar la página cacheada
+     * con el loader visible — pageshow con persisted=true lo oculta.
+     */
+    // if (loader) loader.hidden = true;
+
+    window.addEventListener('pageshow', (e) => {
+        if (loader) loader.hidden = true;
+    });
 });

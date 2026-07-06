@@ -1,94 +1,79 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <style>
-	    :root {
-            --azul-itil: #0098cd;	/* 	#004b8d */
-            --negro-itil: #333333;
-            --claro: #ffffff;		/*  #808b96 */
-            --gris-borde: #cccccc;
-        }
-		
-      /* --- Animaciones (Giros) --- */
-      @keyframes girarHorario {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
-
-      @keyframes girarAntihorario {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(-360deg); }
-      }
-
-      @keyframes girarMuyLento {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
-
-	  /* Estilo de los objetos y tiempo de giro          */
-	  
-      /* Hexágono exterior del logo (Segmentado y claro) */
-      .hex-ext {
-        animation: girarHorario 100s linear infinite;
-		stroke: var(--claro);
-        fill: none;
-        stroke-width: 8;
-        stroke-linecap: round;
-      }
-
-      /* Hexágono interior (Sólido y Azul) */
-      .hex-int {
-        animation: girarAntihorario 10s linear infinite;
-		stroke: var(--azul-itil);
-        stroke-width: 6;
-        fill: var(--negro-itil);
-      }
-
-      /* Flechas radiales del logo original (Azules y muy lentas) */
-      .flechas-radiales {
-        animation: girarMuyLento 25s linear infinite;
-		stroke: var(--azul-itil);
-        stroke-width: 8;
-      }
-
-      /* Elementos de conexión estáticos o de red */
-      .nodos-red {
-		fill: var(--claro);
-      }
-	  
-      /* --- Clases de Control (Centro de giro) --- */
-      .centro-pivote {
-        transform-origin: 200px 200px;
-      }
-
-    </style>
+    <!-- Filtro de brillo para las partículas -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Degradado sutil para los bordes del cubo -->
+    <linearGradient id="cubeStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0052D4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#43C6AC;stop-opacity:1" />
+    </linearGradient>
   </defs>
 
-<!--
-  <rect width="400" height="400" fill="#f5f7f9" rx="20" /> 
--->
-
-  <g class="centro-pivote flechas-radiales">
-    <line x1="200" y1="200" x2="270" y2="130" stroke-dasharray="4,2" />
-    <polygon points="290,110 275,115 285,125" fill="var(--azul-itil)" stroke="none" />
+  <g transform="translate(200, 200)">
     
-    <line x1="200" y1="200" x2="130" y2="270" stroke-dasharray="4,2" />
-    <polygon points="110,290 125,285 115,275" fill="var(--azul-itil)" stroke="none" />
-  </g>
+    <!-- SISTEMA DE PARTÍCULAS (6 ÓRBITAS SIN LÍNEAS) -->
+    <!-- Nota: Las partículas están detrás del cubo en el orden Z visual -->
+    
+    <!-- Partícula 1 -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14s" repeatCount="indefinite"/>
+      <circle cx="120" cy="0" r="7" fill="#0052D4" filter="url(#glow)" transform="rotate(-20)"/>
+    </g>
+    <!-- Partícula 2 -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="18s" repeatCount="indefinite"/>
+      <circle cx="130" cy="0" r="7" fill="#43C6AC" filter="url(#glow)" transform="rotate(40)"/>
+    </g>
+    <!-- Partícula 3 -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="45s" repeatCount="indefinite"/>
+      <circle cx="140" cy="0" r="7" fill="#003380" filter="url(#glow)" transform="rotate(100)"/>
+    </g>
+    <!-- Partícula 4 -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="30s" repeatCount="indefinite"/>
+      <circle cx="150" cy="0" r="7" fill="#0052D4" filter="url(#glow)" transform="rotate(160)"/>
+    </g>
+    <!-- Partícula 5 -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="15s" repeatCount="indefinite"/>
+      <circle cx="130" cy="0" r="7" fill="#43C6AC" filter="url(#glow)" transform="rotate(220)"/>
+    </g>
+    <!-- Partícula 6 -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="20s" repeatCount="indefinite"/>
+      <circle cx="150" cy="0" r="7" fill="#003380" filter="url(#glow)" transform="rotate(280)"/>
+    </g>
 
-  <g class="centro-pivote hex-ext">
-    <path d="M 200 120 L 130 160 L 130 240 L 200 280 L 270 240 L 270 160 Z" stroke-dasharray="40, 15" />
+    <!-- CUBO 3D TRANSPARENTE GIRATORIO -->
+    <g>
+      <!-- Animación de rotación sobre el eje Y simulada en 2D -->
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="50s" repeatCount="indefinite"/>
+      
+      <!-- Cara Superior (Más clara para simular luz cenital) -->
+      <polygon points="0,-80 90,-35 0,10 -90,-35" 
+               fill="rgba(255,255,255,0.1)" stroke="url(#cubeStroke)" stroke-width="2" stroke-linejoin="round"/>
+               
+      <!-- Cara Izquierda (Semi-transparente) -->
+      <polygon points="-90,-35 0,10 0,110 -90,65" 
+               fill="rgba(0,82,212,0.15)" stroke="url(#cubeStroke)" stroke-width="2" stroke-linejoin="round"/>
+               
+      <!-- Cara Derecha (Ligeramente más oscura para dar volumen) -->
+      <polygon points="90,-35 0,10 0,110 90,65" 
+               fill="rgba(67,198,172,0.15)" stroke="url(#cubeStroke)" stroke-width="2" stroke-linejoin="round"/>
+               
+      <!-- Aristas internas traseras (para reforzar la transparencia) -->
+      <line x1="0" y1="10" x2="0" y2="-80" stroke="url(#cubeStroke)" stroke-width="1" opacity="0.5"/>
+      <line x1="-90" y1="-35" x2="0" y2="-80" stroke="url(#cubeStroke)" stroke-width="1" opacity="0.5"/>
+      <line x1="90" y1="-35" x2="0" y2="-80" stroke="url(#cubeStroke)" stroke-width="1" opacity="0.5"/>
+    </g>
+    
   </g>
-
-  <g class="centro-pivote hex-ext">
-    <circle cx="130" cy="160" r="20" class="nodos-red" stroke="none"/>
-    <circle cx="270" cy="240" r="14" class="nodos-red" stroke="none"/>
-    <circle cx="200" cy="120" r="12" fill="var(--azul-itil)" stroke="none"/>
-  </g>
-
-  <g class="centro-pivote hex-int">
-    <polygon points="200,175 221.6,187.5 221.6,212.5 200,225 178.4,212.5 178.4,187.5" />
-  </g>
-
-  <!-- <circle cx="200" cy="200" r="16" fill="#fff" /> -->
 </svg>

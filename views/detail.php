@@ -2,6 +2,9 @@
 /* =========================================================
  * Proyecto      : Sistema de Gestión CMDB para TFG
  * Archivo       : views/detail.php
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
+ * 
  * Descripción   : Vista de detalle completo de un CI.
  *                 Incluye datos generales, red, extensión según
  *                 clase (PC/impresora/monitor), relaciones y,
@@ -14,7 +17,7 @@ $pageTitle = $ci
 require VIEWS_PATH . '/partials/header.php';
 
 /*
- * Función helper: devuelve un icono FontAwesome según la clase del CI.
+ * Función iconoClase: devuelve un icono FontAwesome según la clase del CI.
  * Se define con function_exists() para que sea seguro si la función
  * ya fue declarada en otra vista de la misma petición.
  */
@@ -42,19 +45,19 @@ if (!function_exists('iconoClase')) {
  * Se captura la excepción de forma silenciosa: si la BD ERP no está
  * disponible, la vista simplemente no mostrará la sección de oficina.
  */
-$oficina       = null;
-$redOficina    = [];
-$coordenadas   = null;
-$consistencia  = null;   // resultado de verificarConsistenciaOficina()
+$oficina      = null;
+$redOficina   = [];
+$coordenadas  = null;
+$consistencia = null;   // resultado de verificarConsistenciaOficina()
 
 if ($ci) {
     try {
         require_once BASE_PATH . '/models/OficinaModel.php';
-        $oficModel    = new OficinaModel();
-        $oficina      = $oficModel->findByIdCi((int)$ci['id_ci']);
+        $oficModel = new OficinaModel();
+        $oficina   = $oficModel->findByIdCi((int)$ci['id_ci']);
         if ($oficina) {
             $redOficina   = $oficModel->getRedes((int)$oficina['id_oficina']);
-            $coordenadas  = $oficModel->getCoordenadasCiudad($oficina['ciudad'] ?? '');
+            // $coordenadas  = $oficModel->getCoordenadasCiudad($oficina['ciudad'] ?? '');
             $coordenadas  = $oficModel->getCoordenadasOficina((int)$oficina['id_oficina']);
         }
         /*
@@ -92,17 +95,17 @@ if ($ci) {
                 <span class="badge-clase badge-clase--lg"><?= htmlspecialchars($ci['clase']) ?></span>
                 <span class="detail-id">ID: <?= $ci['id_ci'] ?></span>
             </div>
-            <h1 class="detail-title">
-                <?= htmlspecialchars(trim(($ci['marca'] ?? '') . ' ' . ($ci['modelo'] ?? ''))) ?>
-            </h1>
             <?php
             $nombreLocal = $ci['detalle_pc']['nombre_local']
                         ?? $ci['detalle_impresora']['nombre_local']
                         ?? $ci['red']['hostname']
                         ?? null;
             if ($nombreLocal): ?>
-            <div class="detail-subtitle"><?= htmlspecialchars($nombreLocal) ?></div>
+            <h1 class="detail-title"><?= htmlspecialchars($nombreLocal) ?></h1>
             <?php endif; ?>
+            <h2 class="detail-subtitle">
+                <?= htmlspecialchars(trim(($ci['marca'] ?? '') . ' ' . ($ci['modelo'] ?? ''))) ?>
+            </h2>
         </div>
         <div class="detail-header-actions">
             <a href="index.php?action=search" class="btn-secondary">
@@ -151,7 +154,7 @@ if ($ci) {
                     <tr><th><i class="fas fa-route"></i> Gateway</th>
                         <td class="mono"><?= htmlspecialchars($red['gateway'] ?? '—') ?></td></tr>
                     <?php if (!empty($red['info_red'])): $r = $red['info_red']; ?>
-                    <tr><th><i class="fas fa-sitemap"></i> CIDR</th>
+                    <tr><th><i class="fas fa-sitemap"></i> Red</th>
                         <td class="mono"><?= htmlspecialchars($r['cidr'] ?? '—') ?></td></tr>
                     <tr><th><i class="fas fa-layer-group"></i> VLAN</th>
                         <td><?= htmlspecialchars($r['vlan'] ?? '—') ?></td></tr>
@@ -173,25 +176,25 @@ if ($ci) {
            Se calculan aquí, antes del HTML, para mantener la vista limpia.
            Cada verificación produce un array con:
              'ok'      bool|null  — true=ok, false=error, null=sin datos
-             'icono'   string     — HTML del badge (tick/aspa)
+             'icono'   string     — HTML de la etiqueta (tick/aspa)
              'detalle' string     — texto adicional en el tooltip
         ============================================================ */
 
         /*
-         * Helper local: genera el HTML del badge de verificación.
+         * Helper local: genera el HTML de la etiqueta de verificación.
          *   $ok    = true  → tick verde
          *   $ok    = false → aspa roja
-         *   $ok    = null  → sin badge (sin datos suficientes)
+         *   $ok    = null  → sin icono (no hay datos suficientes)
          *   $titulo        → texto del atributo title (tooltip)
          */
         $badge = function(?bool $ok, string $titulo): string {
             if ($ok === null) return '';
-            if ($ok) {
+            if ($ok) { /* Tick o check verde */
                 return "<span class=\"verif verif--ok\" title=\"$titulo\">"
-                     . "<i class=\"fas fa-check-circle\"></i></span>";
-            }
+                     . "<i class=\"fas fa-check-circle\"></i>✔️</span>"; 
+            } /* Aspa o cruz roja */
             return "<span class=\"verif verif--error\" title=\"$titulo\">"
-                 . "<i class=\"fas fa-times-circle\"></i></span>";
+                 . "<i class=\"fas fa-times-circle\"></i>❌</span>";
         };
 
         /* ── 1. Disco libre < 10% del total ─────────────────────────
@@ -435,15 +438,15 @@ if ($ci) {
              SECCIÓN: OFICINA ASOCIADA AL CI
              Se muestra si el CI tiene red asignada y esa red
              pertenece a una oficina registrada en el ERP.
-             El enlace "Ver ficha completa" lleva a oficina.php.
+             El enlace "Información de la oficina" lleva a oficina.php.
         ══════════════════════════════════════════════════════ -->
         <?php if (!empty($oficina)): ?>
         <div class="detail-card detail-card--full detail-card--oficina">
             <div class="detail-card-header">
                 <i class="fas fa-building"></i> Oficina donde está ubicado el CI
                 <a href="index.php?action=oficina&id=<?= $oficina['id_oficina'] ?>"
-                   class="btn-detail btn-detail--header" title="Ver ficha completa de la oficina">
-                    <i class="fas fa-external-link-alt"></i> Ver ficha completa
+                   class="btn-detail btn-detail--header" title="Ver datos completos de la oficina">
+                    <i class="fas fa-external-link-alt"></i> Información de la oficina
                 </a>
             </div>
             <div class="detail-card-body detail-oficina-body">
@@ -454,7 +457,12 @@ if ($ci) {
                         <th><i class="fas fa-hashtag"></i> ID oficina</th>
                         <td>
                             <strong>#<?= $oficina['id_oficina'] ?></strong>
-                            (<?= htmlspecialchars($oficina['cod_oficina']) ?>)
+                            (<?= htmlspecialchars($oficina['cod_pais'].'.'.$oficina['cod_oficina']) ?>)
+                            <?php /*
+                            (<?= htmlspecialchars($oficina['cod_pais'].'.'
+                                                 .$oficina['cod_ciudad'].'.'
+                                                 .$oficina['cod_oficina']) ?>) 
+                            */ ?>
                             <?php
                             /* Indicador de la fuente del dato de ubicación */
                             if (($oficina['fuente'] ?? '') === 'erp'): ?>
@@ -481,12 +489,12 @@ if ($ci) {
                                 if ($consistencia['estado'] === 'ok'): ?>
                             <span class="badge-consistencia badge-consistencia--ok"
                                   title="<?= htmlspecialchars($consistencia['mensaje']) ?>">
-                                <i class="fas fa-check-circle"></i> Consistente con ERP
+                                  ✔️ Consistente con Descubrimiento
                             </span>
                             <?php   else: // error ?>
                             <span class="badge-consistencia badge-consistencia--error"
                                   title="<?= htmlspecialchars($consistencia['mensaje']) ?>">
-                                <i class="fas fa-times-circle"></i> Discrepancia con ERP
+                                  ❌ Discrepancia con Descubrimiento
                             </span>
                             <?php   endif; ?>
                             <?php endif; ?>
@@ -513,7 +521,7 @@ if ($ci) {
                                 <?= htmlspecialchars($consistencia['nombre_erp']) ?>
                             </a>
                             <span class="discrepancia-hint">
-                                La red apunta a
+                                El dispositivo reporta en 
                                 <strong>#<?= $consistencia['id_red'] ?></strong>
                                 pero el ERP registra
                                 <strong>#<?= $consistencia['id_erp'] ?></strong>

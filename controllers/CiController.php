@@ -2,6 +2,12 @@
 /* =========================================================
  * Proyecto      : Sistema de Gestión CMDB para TFG
  * Archivo       : controllers/CiController.php
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
+ * 
+ * Descripción   : Controlador para manejar la búsqueda y detalle de CI
+ *                 (Configuration Item) en la CMDB, incluyendo búsquedas
+ *                 simples, avanzadas y filtradas por oficina. 
  * ========================================================= */
 
 require_once BASE_PATH . '/models/CiModel.php';
@@ -39,7 +45,7 @@ class CiController {
                 $resultado = $this->model->buscarSimple($termino, $pagina);
             } catch (PDOException $e) {
                 $error = 'Error al realizar la búsqueda.';
-                if (APP_ENV === 'development') $error .= ' [' . $e->getMessage() . ']';
+                if (APP_ENV === 'desarrollo') $error .= ' [' . $e->getMessage() . ']';
             }
         }
         require VIEWS_PATH . '/search.php';
@@ -111,7 +117,7 @@ class CiController {
             $resultado = $this->model->buscarAvanzado($filtros, $pagina);
         } catch (PDOException $e) {
             $error = 'Error en la búsqueda avanzada.';
-            if (APP_ENV === 'development') $error .= ' [' . $e->getMessage() . ']';
+            if (APP_ENV === 'desarrollo') $error .= ' [' . $e->getMessage() . ']';
         }
         require VIEWS_PATH . '/search.php';
     }
@@ -129,7 +135,7 @@ class CiController {
             $ci = $this->model->detalle($id);
         } catch (PDOException $e) {
             $error = 'Error al obtener el detalle del CI.';
-            if (APP_ENV === 'development') $error .= ' [' . $e->getMessage() . ']';
+            if (APP_ENV === 'desarrollo') $error .= ' [' . $e->getMessage() . ']';
         }
         if (!$ci && !$error) {
             $error = "No se encontró el CI con ID $id.";
@@ -198,7 +204,7 @@ class CiController {
             );
         } catch (PDOException $e) {
             $error = 'Error al obtener los activos de la oficina.';
-            if (APP_ENV === 'development') $error .= ' [' . $e->getMessage() . ']';
+            if (APP_ENV === 'desarrollo') $error .= ' [' . $e->getMessage() . ']';
         }
 
         $termino      = '';

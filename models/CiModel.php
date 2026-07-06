@@ -2,6 +2,14 @@
 /* =========================================================
  * Proyecto      : Sistema de Gestión CMDB para TFG
  * Archivo       : models/CiModel.php
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
+ * 
+ * Descripción   : Modelo para manejar la búsqueda y detalle de CI
+ *                  (Configuration Item) en la CMDB, incluyendo búsquedas
+ *                simples, avanzadas y filtradas por oficina.
+ * Métodos       : buscarSimple(), buscarAvanzado(), detalle(), getClases(), estadisticas(),
+ *                 buscarPorOficinaYClase()
  * ========================================================= */
 
 require_once BASE_PATH . '/models/Database.php';
@@ -48,26 +56,30 @@ class CiModel {
                     OR CAST(c.id_ci AS CHAR) LIKE :t10";
 
         /* Contar total de coincidencias sin LIMIT */
+        // Se usa COUNT(DISTINCT c.id_ci) porque un CI puede coincidir en varias columnas
+        // El bucle FOR se usa para enlazar los 10 parámetros :t1 … :t10 con la búsqueda $like
         $stmtTotal = $this->db->prepare("SELECT COUNT(DISTINCT c.id_ci) $sqlBase");
         for ($i = 1; $i <= 10; $i++) $stmtTotal->bindValue(":t$i", $like);
         $stmtTotal->execute();
         $total = (int)$stmtTotal->fetchColumn();
 
-        /* Calcular offset */
+        /* Calcular offset 
+        (cuántas filas de la BD "saltar" antes de mostrar los resultados de la página actual.)
+        */
         $offset = max(0, $pagina - 1) * $porPagina;
 
         /* Consulta paginada */
         $stmt = $this->db->prepare(
             "SELECT DISTINCT
                 c.id_ci,
-                cl.nombre        AS clase,
+                cl.nombre AS clase,
                 c.marca,
                 c.modelo,
                 c.numero_serie,
                 COALESCE(pc.nombre_local, imp.nombre_local) AS nombre_local,
                 rc.direccion_ip,
                 rc.hostname,
-                pc.login         AS login_usuario,
+                pc.login AS login_usuario,
                 c.fecha
             $sqlBase
             ORDER BY cl.nombre, c.marca, c.modelo
@@ -94,7 +106,7 @@ class CiModel {
      * Parámetros:
      *   $f         — array de filtros activos
      *   $pagina    — número de página base 1
-     *   $porPagina — registros por página (defecto 20)
+     *   $porPagina — registros por página (20 por defecto)
      *
      * Retorna array con claves:
      *   filas, total, pagina, porPagina, paginas
@@ -104,14 +116,14 @@ class CiModel {
         $params = [];
 
         // ── Filtros CMDB ──────────────────────────────────────────────
-        if (!empty($f['id_ci']))        { $where[] = 'c.id_ci = :id_ci';              $params[':id_ci']    = (int)$f['id_ci']; }
-        if (!empty($f['clase']))        { $where[] = 'c.id_clase = :clase';           $params[':clase']    = $f['clase']; }
-        if (!empty($f['marca']))        { $where[] = 'c.marca LIKE :marca';           $params[':marca']    = '%'.$f['marca'].'%'; }
-        if (!empty($f['modelo']))       { $where[] = 'c.modelo LIKE :modelo';         $params[':modelo']   = '%'.$f['modelo'].'%'; }
-        if (!empty($f['numero_serie'])) { $where[] = 'c.numero_serie LIKE :ns';       $params[':ns']       = '%'.$f['numero_serie'].'%'; }
-        if (!empty($f['hostname']))     { $where[] = 'rc.hostname LIKE :hostname';    $params[':hostname'] = '%'.$f['hostname'].'%'; }
-        if (!empty($f['ip']))           { $where[] = 'rc.direccion_ip LIKE :ip';      $params[':ip']       = '%'.$f['ip'].'%'; }
-        if (!empty($f['login']))        { $where[] = 'pc.login LIKE :login';         $params[':login']    = '%'.$f['login'].'%'; }
+        if (!empty($f['id_ci']))        { $where[] = 'c.id_ci = :id_ci';            $params[':id_ci']    = (int)$f['id_ci']; }
+        if (!empty($f['clase']))        { $where[] = 'c.id_clase = :clase';         $params[':clase']    = $f['clase']; }
+        if (!empty($f['marca']))        { $where[] = 'c.marca LIKE :marca';         $params[':marca']    = '%'.$f['marca'].'%'; }
+        if (!empty($f['modelo']))       { $where[] = 'c.modelo LIKE :modelo';       $params[':modelo']   = '%'.$f['modelo'].'%'; }
+        if (!empty($f['numero_serie'])) { $where[] = 'c.numero_serie LIKE :ns';     $params[':ns']       = '%'.$f['numero_serie'].'%'; }
+        if (!empty($f['hostname']))     { $where[] = 'rc.hostname LIKE :hostname';  $params[':hostname'] = '%'.$f['hostname'].'%'; }
+        if (!empty($f['ip']))           { $where[] = 'rc.direccion_ip LIKE :ip';    $params[':ip']       = '%'.$f['ip'].'%'; }
+        if (!empty($f['login']))        { $where[] = 'pc.login LIKE :login';        $params[':login']    = '%'.$f['login'].'%'; }
         if (!empty($f['nombre_local'])) {
             $where[] = '(pc.nombre_local LIKE :nl OR imp.nombre_local LIKE :nl2)';
             $params[':nl']  = '%'.$f['nombre_local'].'%';
@@ -122,8 +134,8 @@ class CiModel {
 
         // ── Filtros ERP (oficina) ─────────────────────────────────────
         // Cadena: cmdb.red_ci → cmdb.red_oficina → erp.oficina → erp.ciudad/unidad_organica
-        $needsErp = !empty($f['id_oficina'])     || !empty($f['nombre_oficina']) ||
-                    !empty($f['direccion'])       || !empty($f['cp'])            ||
+        $needsErp = !empty($f['id_oficina'])      || !empty($f['nombre_oficina']) ||
+                    !empty($f['direccion'])       || !empty($f['cp'])             ||
                     !empty($f['unidad_organica']) || !empty($f['ciudad']);
 
         if (!empty($f['id_oficina']))      { $where[] = 'eo.id_oficina = :id_of';    $params[':id_of']   = (int)$f['id_oficina']; }
@@ -133,6 +145,7 @@ class CiModel {
         if (!empty($f['unidad_organica'])) { $where[] = 'euo.nombre LIKE :uorg';    $params[':uorg']    = '%'.$f['unidad_organica'].'%'; }
         if (!empty($f['ciudad']))          { $where[] = 'eciu.nombre LIKE :ciudad';  $params[':ciudad']  = '%'.$f['ciudad'].'%'; }
 
+        // Se construye la cláusula WHERE combinando los filtros activos con AND. Si no hay filtros, no se añade WHERE.
         $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
         // JOINs ERP: solo se añaden si hay algún filtro ERP activo
@@ -181,14 +194,14 @@ class CiModel {
         /* Consulta paginada */
         $sql = "SELECT DISTINCT
                     c.id_ci,
-                    cl.nombre        AS clase,
+                    cl.nombre AS clase,
                     c.marca,
                     c.modelo,
                     c.numero_serie,
                     COALESCE(pc.nombre_local, imp.nombre_local) AS nombre_local,
                     rc.direccion_ip,
                     rc.hostname,
-                    pc.login         AS login_usuario,
+                    pc.login AS login_usuario,
                     c.fecha
                     $selectErp
                 $sqlFrom
@@ -210,7 +223,19 @@ class CiModel {
         ];
     }
 
-    /** Detalle completo de un CI */
+    /* ------------------------------------------------------------------ 
+     * Detalle completo de un CI para mostrar en la ficha de CI.
+     * parámetros:
+     *   $id — identificador interno del CI
+     *    
+     * Devuelve un array con todos los datos del CI, incluyendo:
+     *  - Datos básicos técnicos (ci + clase_ci)
+     *  - Datos de red (red_ci)
+     *  - Datos de la red (red) si tiene IP propia
+     *  - Datos extendidos según clase (pc, impresora, monitor)
+     *  - Relaciones con otros CI (relacion_ci)
+     *  - null si no existe el CI. 
+    */
     public function detalle(int $id): ?array {
         $stmt = $this->db->prepare(
             "SELECT c.*, cl.nombre AS clase
@@ -267,12 +292,21 @@ class CiModel {
         return $ci;
     }
 
-    /** Lista de clases para el selector de búsqueda avanzada */
+    /* ------------------------------------------------------------------ 
+     * Lista de clases para el selector de búsqueda avanzada 
+     * parámetros: ninguno
+     * Retorna array de arrays con claves: id_clase, nombre
+    */
     public function getClases(): array {
         return $this->db->query("SELECT id_clase, nombre FROM clase_ci ORDER BY nombre")->fetchAll();
     }
 
-    /** Estadísticas rápidas para el dashboard */
+    /* ------------------------------------------------------------------
+     * Estadísticas rápidas para el cuadro de mando 
+     * Retorna array con claves:
+     *   total_ci — total de CI en la CMDB
+     *   por_clase — array de arrays con claves: nombre, total 
+    */
     public function estadisticas(): array {
         $stats = [];
         $stats['total_ci']  = $this->db->query("SELECT COUNT(*) FROM ci")->fetchColumn();

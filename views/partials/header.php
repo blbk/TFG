@@ -12,7 +12,7 @@
 <nav class="navbar">
     <div class="navbar-brand">
         <!-- <span class="navbar-logo"><i class="fas fa-network-wired"></i></span> -->
-         <img src="public/img/cubo_q.svg" alt="Logo CMDB" class="logo-header">
+         <img src="public/img/logo_cmdb.svg" alt="Logo CMDB" class="logo-header">
         <span class="navbar-title">CMDB</span>
         <span class="navbar-sub">Gestión de Configuración</span>
     </div>

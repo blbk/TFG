@@ -32,7 +32,7 @@ $expired = !empty($_GET['expired']);
 
     <div class="panel-izq">
         <div class="logo-container">
-            <img src="public/img/cubo_q.svg" alt="Logo CMDB" class="logo-unir">
+            <img src="public/img/logo_cmdb.svg" alt="Logo CMDB" class="logo-unir">
         </div>
         <h1>CMDB</h1>
         <p>Gestión de Configuración y Activos</p>

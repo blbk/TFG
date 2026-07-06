@@ -40,15 +40,15 @@ START TRANSACTION;
 	INSERT INTO clase_activo (nombre) VALUES
 	('PC'),
 	('PC-Portátil'),
-	('Tablet-PC'),
+	('tablet-PC'),
 	('monitor'),
 	('impresora'),
 	('móvil'),
 	('switch'),
 	('router'),
-	('Docking'),
+	('docking'),
 	('AP'),
-	('Teléfonos-IP');
+	('teléfono-IP');
 commit;
 
 -- Tabla: unidad_organica

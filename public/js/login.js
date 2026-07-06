@@ -1,12 +1,14 @@
 /* =========================================================
  * Proyecto      : Sistema de Gestión CMDB para TFG
  * Archivo       : public/js/login.js
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
  * Descripción   : Validación y UX del formulario de login
  * ========================================================= */
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Toggle mostrar/ocultar contraseña
+    // mostrar/ocultar contraseña
     const togglePwd = document.getElementById('togglePwd');
     const pwdInput  = document.getElementById('password');
     const eyeIcon   = document.getElementById('eyeIcon');
