@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         /* Restaurar preferencia guardada */
         if (localStorage.getItem('cmdb_view') === 'cards') {
             viewCardsBtn.click();
-        }
+        } 
     }
 
     /* ================================================================

@@ -1693,3 +1693,7 @@ a:hover { text-decoration: underline; }
     font-weight: 500;
     letter-spacing: 0.3px;
 }
+
+#cardsView[hidden] {
+    display: none !important;
+}
