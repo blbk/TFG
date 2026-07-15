@@ -1,4 +1,5 @@
 # CMDB — Sistema de Gestión de Configuración
+
 **TFG · Grado en Ingeniería Informática · UNIR 2025/2026**
 Autor: Javier Moyano Vizcaíno
 
@@ -60,6 +61,7 @@ cmdb/
 ## Instalación
 
 ### 1. Base de datos
+
 ```sql
 CREATE DATABASE cmdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE erp  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -70,14 +72,17 @@ source datos_prueba.sql
 ```
 
 ### 2. Configuración
+
 Editar `config/database.php` y modificar credenciales MySQL.
 
 ### 3. Despliegue
+
 Copiar la carpeta entera en el DocumentRoot de Apache:
 - XAMPP Windows: `C:\xampp\htdocs\cmdb\`
 - Linux:         `/var/www/html/cmdb/`
 
 ### 4. URL de acceso
+
 ```
 http://localhost/cmdb/index.php
 ```
@@ -85,9 +90,10 @@ http://localhost/cmdb/index.php
 ---
 
 ## Usuarios de prueba
+
 | Login   | Contraseña  | Perfil        |
 |---------|-------------|---------------|
-| admin   | 1234        | Administrador |
+| admin   | admin123    | Administrador |
 | aladino | 1234        | Técnico       |
 
 > Si los hashes no funcionan, generar nuevos ejecutando:
