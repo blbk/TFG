@@ -57,6 +57,8 @@ class UsuarioController {
 
             if ($usuario) {
                 $rutaFoto = $this->model->getRutaFoto((int)$usuario['foto']);
+                $equipos  = $this->model->getEquipos($login);
+                // $licencias  = $this->model->getLicencias($login); Desarrollo futuro
             } else {
                 $error = "El usuario '$login' no existe en el sistema ITSM.";
             }

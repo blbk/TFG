@@ -70,7 +70,7 @@ source datos_prueba.sql
 ```
 
 ### 2. Configuración
-Editar `config/database.php` con tus credenciales MySQL.
+Editar `config/database.php` y modificar credenciales MySQL.
 
 ### 3. Despliegue
 Copiar la carpeta entera en el DocumentRoot de Apache:
@@ -87,8 +87,8 @@ http://localhost/cmdb/index.php
 ## Usuarios de prueba
 | Login   | Contraseña  | Perfil        |
 |---------|-------------|---------------|
-| admin   | admin123    | Administrador |
-| tecnico | tecnico123  | Técnico       |
+| admin   | 1234        | Administrador |
+| aladino | 1234        | Técnico       |
 
 > Si los hashes no funcionan, generar nuevos ejecutando:
 > `php crear_hash.php` y actualizando `datos_prueba.sql`

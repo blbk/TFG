@@ -6,7 +6,7 @@
  * Curso         : 2025/2026
  *
  * Descripción   : Página de búsqueda de elementos de configuración (CI). 
- * Permite búsqueda simple y avanzada.
+ *                 Permite búsqueda simple y avanzada.
  *
  * Variables recibidas desde UsuarioController::showUsuario():
  *   $login    — login solicitado (string, siempre presente)

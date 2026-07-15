@@ -267,7 +267,7 @@ if ($ci) {
                     <tr><th><i class="fas fa-tag"></i> Nombre local</th>
                         <td><?= htmlspecialchars($pc['nombre_local'] ?? '—') ?></td></tr>
 
-                    <tr><th><i class="fas fa-windows"></i> Sistema operativo</th>
+                    <tr><th><i class="fab fa-windows"></i> Sistema operativo</th>
                         <td><?= htmlspecialchars($pc['sistema_operativo'] ?? '—') ?></td></tr>
 
                     <tr><th><i class="fas fa-code-branch"></i> Versión SO</th>

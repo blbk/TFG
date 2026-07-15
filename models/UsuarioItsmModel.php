@@ -77,4 +77,41 @@ class UsuarioItsmModel {
     public function getRutaFotoGenerica(): string {
         return 'public/img/usuarios/0.jpg';
     }
+
+     /* ------------------------------------------------------------------
+     * getEquipos()
+     * Devuelve los equipos en los que el usuario ha hecho login como
+     * último usuario. Se cruzan los datos de la tabla pc (que almacena
+     * el login del último usuario) con la tabla ci y clase_ci para
+     * obtener la información completa de cada equipo, y con red_ci para
+     * la IP y el hostname.
+     *
+     * Parámetro : $login — login del usuario
+     * Retorna   : array de filas con id_ci, clase, marca, modelo,
+     *             nombre_local, hostname, direccion_ip, sistema_operativo,
+     *             version_so, fecha_login
+     * ------------------------------------------------------------------ */
+    public function getEquipos(string $login): array {
+        $stmt = $this->db->prepare(
+            "SELECT
+                c.id_ci,
+                cl.nombre       AS clase,
+                c.marca,
+                c.modelo,
+                pc.nombre_local,
+                rc.hostname,
+                rc.direccion_ip,
+                pc.sistema_operativo,
+                pc.version_so,
+                pc.fecha_login
+             FROM pc
+                INNER JOIN ci c  ON c.id_ci = pc.id_ci
+                INNER JOIN clase_ci cl ON cl.id_clase = c.id_clase
+                LEFT  JOIN red_ci rc ON rc.id_ci = pc.id_ci
+             WHERE pc.login = :login
+             ORDER BY pc.fecha_login DESC"
+        );
+        $stmt->execute([':login' => $login]);
+        return $stmt->fetchAll();
+    }
 }

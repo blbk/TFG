@@ -6,11 +6,11 @@
  * Descripción   : Interactividad de la pantalla de búsqueda.
  *
  * Incluye:
- *   - Toggle del panel de búsqueda avanzada
+ *   - Selector (toggle) del panel de búsqueda avanzada
  *   - Detección del modo de búsqueda (CI vs Oficinas)
  *     y actualización dinámica del botón y aviso
  *   - Limpiar filtros avanzados
- *   - Toggle tabla / tarjetas con persistencia en localStorage
+ *   - Conmutador (toggle) tabla / tarjetas con persistencia en localStorage
  *   - Navegación por clic en fila de tabla
  *   - Autocompletado AJAX con debounce y navegación por teclado
  *   - Loader de búsqueda al enviar formulario (simple o avanzado)
@@ -24,7 +24,7 @@ if (loader) loader.hidden = true;
 document.addEventListener('DOMContentLoaded', () => {
 
     /* ================================================================
-       TOGGLE PANEL BÚSQUEDA AVANZADA
+       SELECTOR (TOGGLE) DE PANEL BÚSQUEDA AVANZADA
     ================================================================ */
     const toggleBtn = document.getElementById('toggleAdvanced');
     const advPanel  = document.getElementById('advancedPanel');
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ================================================================
-       TOGGLE TABLA / TARJETAS
+       CONMUTADOR (TOGGLE) ENTRE TABLA / TARJETAS
        Persiste la preferencia del usuario en localStorage.
     ================================================================ */
     const tableView    = document.getElementById('tableView');
@@ -168,13 +168,20 @@ document.addEventListener('DOMContentLoaded', () => {
        Busca sugerencias mientras el usuario escribe (debounce 300ms).
        Soporta navegación por teclado (↑↓, Enter, Escape).
     ================================================================ */
+
+    // Elementos del DOM: Input de búsqueda y contenedor de sugerencias
     const searchInput = document.getElementById('searchInput');
     const suggestions = document.getElementById('searchSuggestions');
+
+    // Guarda el identificador del setTimeout activo, para poder cancelarlo
     let debounceTimer = null;
+
+    // Guarda la última consulta buscada para evitar peticiones duplicadas
     let lastQuery     = '';
 
     if (searchInput && suggestions) {
 
+        // Evento cada vez que el usuario escribe en el input de búsqueda
         searchInput.addEventListener('input', () => {
             const q = searchInput.value.trim();
             clearTimeout(debounceTimer);
@@ -182,6 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (q.length < 2) { hideSuggestions(); return; }
             if (q === lastQuery) return;
 
+            // Espera 300ms de inactividad antes de lanzar la petición
+            // (patrón "debounce" habitual para no saturar el servidor).
             debounceTimer = setTimeout(() => {
                 lastQuery = q;
                 fetchSuggestions(q);
@@ -274,13 +283,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ================================================================
-       LOADER DE BÚSQUEDA
+       CARGADOR (LOADER) DE BÚSQUEDA
        Se muestra al enviar cualquiera de los dos formularios
        (simple o avanzado) y se oculta automáticamente cuando el
        DOM ya tiene los resultados (la página nueva ha cargado).
 
        Nota: el loader solo se activa cuando hay algo que buscar,
        evitando mostrarlo al limpiar filtros o al enviar vacío.
+
+       El objetivo es mostrar el estado de "buscando" mientras el servidor 
+       procesa la búsqueda y se carga la página de resultados.
     ================================================================ */
     // const loader       = document.getElementById('searchLoader');
     const searchForm   = document.getElementById('searchForm');

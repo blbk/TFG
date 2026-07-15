@@ -2,7 +2,16 @@
 /* =========================================================
  * Proyecto      : Sistema de Gestión CMDB para TFG
  * Archivo       : index.php  (Front Controller - raíz del proyecto)
+ * Autor         : Javier Moyano Vizcaíno
+ * Curso         : 2025/2026
+ * 
+ * Descripción   : es el front controller del proyecto: 
+ *                 todas las peticiones pasan por él vía "?"
+ *                 Inicia la sesión y comprueba su caducidad 
+ *                 Prptege rutas que requieren sesión iniciada y redirige a login si no hay sesión.
+ *                 Carga el controlador adecuado según la acción solicitada.
  * ========================================================= */
+
 
 // BASE_PATH = carpeta raíz del proyecto (donde está este fichero)
 define('BASE_PATH', __DIR__);
@@ -33,6 +42,7 @@ if (in_array($action, $rutasProtegidas) && empty($_SESSION['usuario'])) {
     exit;
 }
 
+// Controlador prinicipal: según la acción solicitada, se carga el controlador correspondiente y se ejecuta el método adecuado.
 switch ($action) {
 
     case 'login':
